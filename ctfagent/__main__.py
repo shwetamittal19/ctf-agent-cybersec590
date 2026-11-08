@@ -96,7 +96,8 @@ def cmd_selftest(args):
     cfg = load_config(args.config)
     cfg["model"] = {**cfg["model"], "provider": "scripted", "name": "scripted-fixture"}
     cfg["name"] = "selftest"
-    s = run_trial(ROOT / "challenges/sample/toy_b64", cfg, ROOT / "runs", 1, "selftest", sandbox_kind="local")
+    s = run_trial(ROOT / "challenges/sample/toy_b64", cfg, ROOT / "runs", 1, "selftest",
+                  sandbox_kind="docker" if args.docker else "local")
     print(json.dumps({k: s[k] for k in ("run_id", "status", "stop_reason", "submissions", "blocked_actions",
                                          "model_calls", "tool_calls")}, indent=2))
     sys.exit(0 if s["solved"] else 1)
@@ -138,6 +139,8 @@ def main():
     for name, fn in (("doctor", cmd_doctor), ("selftest", cmd_selftest), ("build-image", cmd_build_image)):
         sp = sub.add_parser(name)
         sp.add_argument("--config", default=str(ROOT / "configs/baseline.json"))
+        if name == "selftest":
+            sp.add_argument("--docker", action="store_true", help="run the fixture inside the Docker sandbox")
         sp.set_defaults(fn=fn)
     r = sub.add_parser("run")
     r.add_argument("--challenge", required=True)

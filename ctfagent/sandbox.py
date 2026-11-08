@@ -62,10 +62,15 @@ class DockerSandbox:
                 "--user", "ctf", "--workdir", WORKDIR,
                 self.cfg["image"], "sleep", "infinity"]
         self.cid = docker(*args, timeout=120).strip()
+        # Stream each file in as the ctf user (cap-drop ALL forbids chown, so docker cp's
+        # root-owned files would be unusable). Keep the executable bit if the source has it.
         for f in files:
-            docker("cp", str(f), f"{self.cid}:{WORKDIR}/{f.name}", timeout=120)
-        # docker cp creates root-owned files; make them readable to the ctf user.
-        docker("exec", "-u", "root", self.cid, "chown", "-R", "ctf:ctf", WORKDIR, timeout=60)
+            mode = "755" if f.stat().st_mode & 0o111 else "644"
+            code, _, err, _ = _run(["docker", "exec", "-i", "-u", "ctf", self.cid, "sh", "-c",
+                                    'cat > "$1" && chmod "$2" "$1"', "sh", f"{WORKDIR}/{f.name}", mode],
+                                   120, f.read_bytes())
+            if code != 0:
+                raise SafeError("copy_failed: " + err.decode(errors="replace")[-200:])
 
     def exec(self, command: str, timeout: int, max_bytes: int):
         t0 = time.monotonic()

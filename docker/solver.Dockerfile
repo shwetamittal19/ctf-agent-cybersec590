@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
       ltrace strace patchelf libc6-dbg \
     && rm -rf /var/lib/apt/lists/*
 RUN pip3 install --no-cache-dir pwntools pycryptodome requests z3-solver sympy gmpy2 ROPgadget
-RUN useradd -m -u 1000 ctf && mkdir -p /work && chown ctf:ctf /work
+RUN useradd -m ctf && mkdir -p /work && chown ctf:ctf /work
 USER ctf
 WORKDIR /work
 CMD ["sleep", "infinity"]

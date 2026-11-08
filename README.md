@@ -88,7 +88,7 @@ python3 -m ctfagent build-image
 python3 -m unittest discover -s tests -v
 ```
 ```bash
-python3 -m ctfagent selftest
+python3 -m ctfagent selftest --docker
 ```
 ```bash
 python3 -m ctfagent doctor --config configs/baseline.json
