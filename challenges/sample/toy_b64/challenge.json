@@ -1,0 +1,7 @@
+{
+  "name": "toy_b64",
+  "category": "misc",
+  "description": "Self-test fixture (not a CTFTiny challenge). The message in message.txt is encoded.",
+  "flag": "flag{selftest_b64_ok}",
+  "files": ["message.txt"]
+}

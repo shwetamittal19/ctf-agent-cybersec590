@@ -1,0 +1,2 @@
+# Scored evaluation set: 10 CTFTiny challenges, disjoint from dev.txt. Freeze before scoring.
+# Do not read flags, solutions, or write-ups for these.

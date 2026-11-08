@@ -1,0 +1,8 @@
+.env
+__pycache__/
+*.pyc
+runs/selftest/
+runs/readiness/*.jsonl
+challenges/CTFTiny/
+.DS_Store
+results/selftest/
