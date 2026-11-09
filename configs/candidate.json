@@ -7,9 +7,12 @@
     "temperature": 0.2,
     "max_output_tokens": 2048,
     "timeout_s": 120,
-    "retries": 3,
+    "retries": 6,
     "usd_per_1m_input": 2.0,
-    "usd_per_1m_output": 8.0
+    "usd_per_1m_output": 8.0,
+    "retry_initial_delay_s": 10,
+    "retry_max_delay_s": 60,
+    "min_seconds_between_calls": 2
   },
   "budget": {
     "wall_clock_s": 1200,

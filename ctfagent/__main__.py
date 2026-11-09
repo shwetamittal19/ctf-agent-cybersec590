@@ -119,7 +119,7 @@ def cmd_batch(args):
     spent = 0
     for trial in range(1, args.trials + 1):
         for d in dirs:
-            cid = chal.challenge_id_for(d).replace("/", "__")
+            cid = chal.load(d).public.challenge_id.replace("/", "__")
             done = list((ROOT / "runs" / args.label / cfg["name"] / cid).glob(f"trial-{trial}-*/summary.json"))
             if done and not args.rerun:
                 print(f"skip {cid} trial {trial} (exists)")
@@ -130,6 +130,9 @@ def cmd_batch(args):
             s = run_trial(d, cfg, ROOT / "runs", trial, args.label)
             spent += s.get("total_tokens", 0)
             print(f"{cid} trial {trial}: {s['status']} ({s['stop_reason']}) {s['wall_s']}s tokens={s.get('total_tokens')} spent={spent}")
+            if s.get("stop_reason") in {"http_status_422", "http_status_401", "http_status_403"}:
+                print("STOP: gateway refused requests (key budget exceeded or key invalid). Remaining attempts not run.")
+                return
 
 
 def main():

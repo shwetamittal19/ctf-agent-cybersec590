@@ -20,7 +20,7 @@ TOY = ROOT / "challenges/sample/toy_b64"
 
 class TestEvaluator(unittest.TestCase):
     def test_verdicts_and_no_leak(self):
-        ev = Evaluator(TOY / "challenge.json", 2)
+        ev = Evaluator((TOY / "challenge.json", None), 2)
         bad = ev.submit("flag{nope}")
         self.assertEqual(bad["verdict"], "incorrect")
         good = ev.submit(" flag{selftest_b64_ok} ")
@@ -29,7 +29,7 @@ class TestEvaluator(unittest.TestCase):
         self.assertEqual(ev.submit("x")["reason"], "submission_limit_reached")
 
     def test_trace_redacts_flag(self):
-        ev = Evaluator(TOY / "challenge.json", 2)
+        ev = Evaluator((TOY / "challenge.json", None), 2)
         with tempfile.TemporaryDirectory() as d:
             t = Trace(Path(d) / "t.jsonl", ev.redact)
             t.event("tool_result", result={"stdout": "flag{selftest_b64_ok}"})

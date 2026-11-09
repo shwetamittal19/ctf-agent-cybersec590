@@ -1,0 +1,38 @@
+{
+  "at": "2026-11-09T00:20:31.480048+00:00",
+  "config": "baseline",
+  "checks": {
+    "docker_daemon": {
+      "ok": true,
+      "detail": ""
+    },
+    "solver_image": {
+      "ok": true,
+      "detail": "ctf-solver:latest"
+    },
+    "egress_blocked": {
+      "ok": true,
+      "detail": "curl https://example.com from solver"
+    },
+    "external_dns_blocked": {
+      "ok": true,
+      "detail": "NO_DNS"
+    },
+    "no_docker_socket": {
+      "ok": true,
+      "detail": ""
+    },
+    "non_root_solver": {
+      "ok": true,
+      "detail": "uid=1001"
+    },
+    "no_answer_key_in_solver": {
+      "ok": true,
+      "detail": ""
+    },
+    "model_reachable": {
+      "ok": false,
+      "detail": "network_unavailable_or_timeout"
+    }
+  }
+}

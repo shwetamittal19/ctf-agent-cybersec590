@@ -1,2 +1,10 @@
-# Scored evaluation set: 10 CTFTiny challenges, disjoint from dev.txt. Freeze before scoring.
-# Do not read flags, solutions, or write-ups for these.
+challenges/CTFTiny/evaluation/challenges/cry-Collision-Course
+challenges/CTFTiny/evaluation/challenges/cry-ECXOR
+challenges/CTFTiny/evaluation/challenges/cry-babycrypto
+challenges/CTFTiny/evaluation/challenges/for-1black0white
+challenges/CTFTiny/evaluation/challenges/for-whyOS
+challenges/CTFTiny/evaluation/challenges/rev-baby_mult
+challenges/CTFTiny/evaluation/challenges/rev-beleaf
+challenges/CTFTiny/evaluation/challenges/rev-checker
+challenges/CTFTiny/evaluation/challenges/rev-ezbreezy
+challenges/CTFTiny/evaluation/challenges/rev-rebug_2

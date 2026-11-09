@@ -30,7 +30,13 @@ class GatewayModel:
         payload = {"model": self.name, "messages": messages, "tools": tools, "tool_choice": "auto",
                    "temperature": self.cfg.get("temperature", 0.2),
                    "max_tokens": self.cfg.get("max_output_tokens", 2048)}
-        delay = 5
+        # Pace calls and back off on rate limits (Duke gateway returns 429 under load).
+        gap = self.cfg.get("min_seconds_between_calls", 0)
+        wait = getattr(self, "_last", 0) + gap - time.monotonic()
+        if wait > 0:
+            time.sleep(wait)
+        delay = self.cfg.get("retry_initial_delay_s", 10)
+        self.retries_used = 0
         for attempt in range(self.cfg.get("retries", 3) + 1):
             try:
                 resp = http_json(self.base + "/chat/completions", timeout, payload, self.credential)
@@ -40,8 +46,10 @@ class GatewayModel:
                                          "http_status_503", "http_status_504", "network_unavailable_or_timeout"}
                 if not retryable or attempt == self.cfg.get("retries", 3):
                     raise
+                self.retries_used += 1
                 time.sleep(delay)
-                delay *= 2
+                delay = min(delay * 2, self.cfg.get("retry_max_delay_s", 60))
+        self._last = time.monotonic()
         try:
             choice = resp["choices"][0]
             msg = {k: v for k, v in choice["message"].items() if k in {"role", "content", "tool_calls"}}

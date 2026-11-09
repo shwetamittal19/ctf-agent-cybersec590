@@ -6,3 +6,4 @@ runs/readiness/*.jsonl
 challenges/CTFTiny/
 .DS_Store
 results/selftest/
+private/

@@ -1,0 +1,47 @@
+{
+  "name": "baseline",
+  "model": {
+    "provider": "gateway",
+    "name": "GPT 4.1",
+    "base_url": "https://litellm.oit.duke.edu/v1",
+    "temperature": 0.2,
+    "max_output_tokens": 2048,
+    "timeout_s": 120,
+    "retries": 3,
+    "usd_per_1m_input": 2.0,
+    "usd_per_1m_output": 8.0
+  },
+  "budget": {
+    "wall_clock_s": 1200,
+    "max_model_calls": 40,
+    "max_tool_calls": 60,
+    "max_total_tokens": 600000,
+    "max_submissions": 5,
+    "batch_token_cap": 6000000
+  },
+  "tools": {
+    "command_timeout_default_s": 60,
+    "command_timeout_max_s": 180,
+    "max_capture_bytes": 200000,
+    "max_output_chars": 6000,
+    "repeat_warning_after": null
+  },
+  "agent": {
+    "max_idle_turns": 2,
+    "stop_after_blocked_actions": 3,
+    "keep_last_tool_outputs": null
+  },
+  "prompt": {
+    "planning": false
+  },
+  "sandbox": {
+    "image": "ctf-solver:latest",
+    "network_name": "ctfnet",
+    "cpus": 2,
+    "memory": "2g",
+    "pids_limit": 256,
+    "target_start_timeout_s": 600,
+    "target_ready_timeout_s": 90
+  },
+  "redact_flag_in_traces": true
+}

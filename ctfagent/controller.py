@@ -86,7 +86,7 @@ def run_trial(challenge_dir, config: dict, out_root: Path, trial: int, label: st
     out = Path(out_root) / label / config["name"] / spec.public.challenge_id.replace("/", "__") / f"trial-{trial}-{run_id}"
     out.mkdir(parents=True, exist_ok=True)
 
-    evaluator = Evaluator(spec.challenge_json, config["budget"]["max_submissions"])
+    evaluator = Evaluator(spec.answer_key, config["budget"]["max_submissions"])
     redactor = evaluator.redact if config.get("redact_flag_in_traces", True) else None
     trace = Trace(out / "trace.jsonl", redactor)
     prov = git_info()
@@ -115,7 +115,9 @@ def run_trial(challenge_dir, config: dict, out_root: Path, trial: int, label: st
             probe_egress(sandbox, trace)
             if targets and not targets.wait_ready(sandbox):
                 raise SafeError("target_not_ready")
-        result = run_agent(spec.public, model, sandbox, evaluator.submit, budget, trace, config)
+        trace.event("verification_mode", mode="live" if evaluator.verified_mode else "unverified_record_only")
+        result = run_agent(spec.public, model, sandbox, evaluator.submit, budget, trace, config,
+                           verified=evaluator.verified_mode)
     except SafeError as exc:
         result = {"status": "error", "stop_reason": str(exc)}
         trace.event("error", reason=str(exc))
@@ -133,6 +135,9 @@ def run_trial(challenge_dir, config: dict, out_root: Path, trial: int, label: st
             "run_id": run_id, "challenge_id": spec.public.challenge_id, "category": spec.public.category,
             "trial": trial, "label": label, "config": config["name"], "model": config["model"]["name"],
             "sandbox": sandbox_kind, "commit": prov["commit"], "dirty": prov["dirty"],
+            "verification": "live" if evaluator.verified_mode else "unverified",
+            "candidate_flag": next((s["candidate"] for s in evaluator.submissions
+                                    if s["verdict"] == "recorded_unverified"), None),
             "solved": solved, "status": "solved" if solved else result.get("status", "error"),
             "stop_reason": result.get("stop_reason"),
             "wall_s": round(time.monotonic() - started, 1), "agent_wall_s": round(budget.elapsed(), 1),
